@@ -4,8 +4,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan')
 const cors = require('cors');
-// const swaggerUI = require('swagger-ui-express')
-// const swaggerJsDoc = require('swagger-jsdoc')
 const db = require('./models/index')
 
 
@@ -14,28 +12,12 @@ db.connect()
     .then(()=> console.log('Database Connected'))
     .catch(err => console.log( 'Database err is ',err ));
 
-//Configuring options for swagger documentation
-// const options = {
-//     definition : {
-//         openapi : '3.0.0',
-//         info : {
-//             title : 'BlogPost Api',
-//             version : '1.0.0',
-//             description : 'Jeeves Assignments'
-//         },
-//         servers : [{
-//             url : 'http://localhost:8080'
-//         }]
-//     },
-//     apis : ['./routes/*.js']
-// }
 
-// const specs = swaggerJsDoc(options)
 const app = express();
 
 const port = 8080 || process.env.port;
 
-// app.use('/api-docs',swaggerUI.serve, swaggerUI.setup(specs))
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());

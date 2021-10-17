@@ -14,9 +14,9 @@ describe("POST for /signup and /login", ()=>{
         try{
             const queryParams = 
             {
-                "name" : "Veeru",
+                "name" : "Veerender",
                 "password" : "Veeru123",
-                "email" : "Veeru123@gmail.com"
+                "email" : "Veerender123@gmail.com"
             }
             const response = await chai.request(baseUrl)
             .post('/signup')
