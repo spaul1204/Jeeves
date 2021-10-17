@@ -6,17 +6,13 @@ const morgan = require('morgan')
 const cors = require('cors');
 // const swaggerUI = require('swagger-ui-express')
 // const swaggerJsDoc = require('swagger-jsdoc')
-const mongoose = require('mongoose')
+const db = require('./models/index')
 
-const url = 'mongodb+srv://SnehaR:' + process.env.MONGO_PWD + '@cluster0.z26g7.mongodb.net/Blog?retryWrites=true&w=majority'
 
-//Connecting to mongodb
-mongoose.connect(url,{
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-.then(() => console.log( 'Database Connected' ))
-.catch(err => console.log( 'Database err is ',err ));
+//connecting to the database
+db.connect()
+    .then(()=> console.log('Database Connected'))
+    .catch(err => console.log( 'Database err is ',err ));
 
 //Configuring options for swagger documentation
 // const options = {
