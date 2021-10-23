@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan')
 const cors = require('cors');
+const ExpressError = require('./utils/ExpressError')
 const db = require('./models/index')
 
 
@@ -31,19 +32,13 @@ app.use('/users',users)
 app.use('/topic',topic)
 
 //Error handling
-app.use((req,res,next)=>{
-    const error = new Error('Resource not found')
-    error.status = 404
-    next(error)
+app.all('*',(req, res, next) =>{
+    next(new ExpressError('Page Not Found',404))
 })
 
 app.use((error,req,res,next) =>{
-    res.status(error.status || 500)
-    res.json({
-        error : {
-            message : error.message
-        }
-    })
+    const { statusCode = 500, message = "Something went wrong" } = error
+    res.status(statusCode).send(message)
 })
 
 app.listen(port, () => {
