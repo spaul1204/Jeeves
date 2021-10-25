@@ -1,3 +1,4 @@
+const ExpressError = require('../utils/ExpressError')
 
 const validateParams =  (requestType, requestParams) => {
     return (req, res, next) => {
@@ -7,12 +8,10 @@ const validateParams =  (requestType, requestParams) => {
                 let reqParam = requestVerb[param.param_key]
 
                 if (!checkParamType(reqParam, param)) {
-                    return res.status(400).send({
-                        result: `${param.param_key} is of type ` + `${typeof reqParam} but should be ${param.type}`
-                    })
+                    return next(new ExpressError(`${param.param_key} is of type ` + `${typeof reqParam} but should be ${param.type}`,400))
                 } 
             } else if (param.required){
-                return res.status(400).send({ result: `Missing Parameter ${param.param_key}` })
+               return next(new ExpressError(`Missing Parameter ${param.param_key}`,400))
             }
         }
         next();

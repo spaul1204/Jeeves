@@ -1,4 +1,6 @@
-require('dotenv').config()
+if(process.env.NODE_ENV !== 'production'){
+    require('dotenv').config()
+}
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -32,10 +34,13 @@ app.use('/users',users)
 app.use('/topic',topic)
 
 //Error handling
+
+//Handling error for resources not found
 app.all('*',(req, res, next) =>{
     next(new ExpressError('Page Not Found',404))
 })
 
+//Handling all other errors except 404
 app.use((error,req,res,next) =>{
     const { statusCode = 500, message = "Something went wrong" } = error
     res.status(statusCode).send(message)

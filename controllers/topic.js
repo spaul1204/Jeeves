@@ -9,19 +9,21 @@ const getAllTopics = async(req, res, next) => {
     nPerPage = parseInt(nPerPage)
     pageNumber = parseInt(pageNumber)
 
+    //sorting the topics based on recent creation and then applying pagination
     const topics = await Topic.find()
         .sort({createdOn : -1})
         .skip(pageNumber > 0 ? ( ( pageNumber - 1 ) * nPerPage ) : 0)
         .limit(nPerPage)
-        
+    
+    //extracting the topic names for each topic
     topics.forEach(each => getAllTopics.push(each.topicName))
+
     res.status(200).json({ topics : getAllTopics })
 }
 
 const createNewTopic = async(req,res,next) =>{
     const { topicName } = req.body
     const { _id } = res.userData
-    console.log("body is ",req.body)
  
     const newTopic = await new Topic({
         _id : mongoose.Types.ObjectId(), 
@@ -31,12 +33,6 @@ const createNewTopic = async(req,res,next) =>{
         isDeleted : false 
     })
     newTopic.save()
-    // .save()
-    // .then(result =>{
-    //     console.log("result in db is ",result)
-    //     res.status(201).json({response : 'Topic has been created successfully'})
-    // })
-    // .catch(next)
     res.status(201).json({response : 'Topic has been created successfully'})
 }
 
@@ -54,7 +50,6 @@ const getAllPosts = async(req,res,next) => {
 
     result.posts.forEach(each =>  getAllPosts.push(each))
     
-    console.log("array is ",getAllPosts)
     res.status(200).json({ response : getAllPosts })
 }
 
@@ -65,7 +60,8 @@ const createNewPost = async(req,res,next) =>{
     const filePaths = []
 
     req.files.forEach( eachFile => filePaths.push(eachFile.path))
- 
+    
+    //updating existing topic to add a new post with multiple images
     await Topic.updateOne(
         { _id : req.params.topicId },
         { $push: 
@@ -79,8 +75,6 @@ const createNewPost = async(req,res,next) =>{
                 }
             }
         })
-        // .then(result => res.status(201).json({response : 'Post has been created successfully'}))
-        // .catch(next)
         res.status(201).json({response : 'Post has been created successfully'})
         
 }
@@ -88,6 +82,8 @@ const createNewPost = async(req,res,next) =>{
 const createNewComment = async(req,res,next) =>{
     const { comments } = req.body
     const { _id } = res.userData
+
+    //updating an existing Topic to add new comments to a post under the particular topic
         await Topic.updateOne(
             { 'posts._id' : req.params.postId },
             { $push: 
@@ -100,8 +96,6 @@ const createNewComment = async(req,res,next) =>{
                     }
                 }
             })
-            // .then(result => res.status(201).json({response : 'Comment has been created successfully'}))
-            // .catch(next)
             res.status(201).json({response : 'Comment has been created successfully'})
     
 }

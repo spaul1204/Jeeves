@@ -1,3 +1,4 @@
+require('dotenv').config()
 
 const User = require('../models/user')
 const mongoose = require('mongoose')
@@ -8,6 +9,7 @@ const jwt = require('jsonwebtoken')
 
 
 const signUp = async(req,res,next)=>{
+
     //Querying the db to check if email already exists
     User.find({ email : req.body.email})
     .exec()
@@ -15,6 +17,7 @@ const signUp = async(req,res,next)=>{
         if(user.length >= 1){
             next(new ExpressError('Mail Exists', 409))
         }
+
         //hashing the password after confirming that person registering is a new user
         else{
             bcrypt.hash(req.body.password, 10, async(err,hash)=>{
@@ -57,6 +60,7 @@ const login = async(req,res,next)=>{
                 if(err){
                     return next(new ExpressError('Auth Failed', 401))
                 }
+                
                 //generating an authorisation token on successful comparison of password
                 if(result){
                     const token = jwt.sign({
